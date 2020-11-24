@@ -39,7 +39,7 @@ public class ListFragment extends FeedsFragment {
 
         @Override
         public void refresh(@Nullable RequestCallback callback) {
-            DataRequestManager.getInstance().getCityList(
+            DataRequestManager.getInstance().requestCityList(null,
                     models -> {
                         List<FeedItem<?>> list = new ArrayList<>();
                         for (City city : models) {
@@ -49,7 +49,7 @@ public class ListFragment extends FeedsFragment {
                         if (!list.isEmpty()) {
                             list.add(new TrackFeedItem<>(FeedItem.FeedType.LOAD_MORE,
                                     UUID.randomUUID().toString(),
-                                    new PageInfo.EmptyLoadMorePageInfo()));
+                                    new PageInfo(String.valueOf(1), true)));
                         }
                         callback.onSuccess(list);
                     });
@@ -58,7 +58,8 @@ public class ListFragment extends FeedsFragment {
         @Override
         public void loadMore(@NonNull FeedItem<PageInfo> feedItem,
                 @Nullable RequestCallback callback) {
-            DataRequestManager.getInstance().getCityList(
+            String nexId = String.valueOf(Integer.parseInt(feedItem.getModel().nextId) + 1);
+            DataRequestManager.getInstance().requestCityList(feedItem.getModel().nextId,
                     models -> {
                         List<FeedItem<?>> list = new ArrayList<>();
                         for (City city : models) {
@@ -68,7 +69,7 @@ public class ListFragment extends FeedsFragment {
                         if (!list.isEmpty()) {
                             list.add(new TrackFeedItem<>(FeedItem.FeedType.LOAD_MORE,
                                     UUID.randomUUID().toString(),
-                                    new PageInfo.EmptyLoadMorePageInfo()));
+                                    new PageInfo(nexId, true)));
                         }
                         callback.onSuccess(list);
                     });

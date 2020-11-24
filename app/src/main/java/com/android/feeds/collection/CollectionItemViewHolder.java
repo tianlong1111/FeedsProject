@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
@@ -39,11 +41,11 @@ public class CollectionItemViewHolder<T extends ViewItem> extends RecyclerView.V
         return mItemModel;
     }
 
-    final void bind(@NonNull T t) {
+    final void partialBind(@NonNull T t, @NonNull List<Object> payloads) {
         if (mItemModel != null) {
             if (mItemModel.getId().equals(t.getId())) {
                 mItemModel = t;
-                onUpdate(t);
+                onPartialBind(t, payloads);
             } else {
                 onUnBind();
                 mItemModel = t;
@@ -55,8 +57,18 @@ public class CollectionItemViewHolder<T extends ViewItem> extends RecyclerView.V
         }
     }
 
+    final void bind(@NonNull T t) {
+        if (mItemModel != null) {
+            if (!mItemModel.getId().equals(t.getId())) {
+                onUnBind();
+            }
+        }
+        mItemModel = t;
+        onBind(t);
+    }
+
     @CallSuper
-    public void onUpdate(@Nullable T t) {
+    public void onPartialBind(@Nullable T t, @NonNull List<Object> payloads) {
     }
 
     @CallSuper

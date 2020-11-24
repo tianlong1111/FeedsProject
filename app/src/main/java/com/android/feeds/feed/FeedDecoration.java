@@ -5,6 +5,9 @@ import android.graphics.Rect;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.android.feeds.utils.Check;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FeedDecoration extends RecyclerView.ItemDecoration {
@@ -25,6 +28,24 @@ public class FeedDecoration extends RecyclerView.ItemDecoration {
                     "Invalid orientation. It should be either HORIZONTAL or VERTICAL");
         }
         mOrientation = orientation;
+    }
+
+    @Override
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
+            @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+        RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(view);
+        if (viewHolder instanceof FeedItemViewHolder) {
+            if (parent.getAdapter() == null) {
+                if (Check.ON) Check.shouldNeverHappen();
+                return;
+            }
+            int position = parent.getChildAdapterPosition(view);
+            FeedItemViewHolder itemViewHolder = (FeedItemViewHolder) viewHolder;
+            int size = parent.getAdapter().getItemCount();
+            itemViewHolder.getDividerOffset(outRect,
+                    position > 0 ? parent.getAdapter().getItemViewType(position - 1) : 0,
+                    size > position + 1 ? parent.getAdapter().getItemViewType(position + 1) : 0);
+        }
     }
 
     @Override

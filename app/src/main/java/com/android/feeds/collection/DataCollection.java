@@ -1,5 +1,7 @@
 package com.android.feeds.collection;
 
+import android.os.Bundle;
+
 import com.android.feeds.utils.Check;
 
 import java.util.ArrayList;
@@ -22,6 +24,9 @@ public class DataCollection<T extends ViewItem> implements List<T> {
         }
 
         default void onItemChanged(int position, @NonNull T item) {
+        }
+
+        default void onItemChanged(int position, @NonNull T item, @NonNull List<Object> list) {
         }
 
         default void onItemMoved(int src, int dest) {
@@ -339,6 +344,18 @@ public class DataCollection<T extends ViewItem> implements List<T> {
         if (mItems.contains(t)) {
             for (OnDataSetChangedObserver<T> item : mObservers) {
                 item.onItemChanged(mItems.indexOf(t), t);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateValue(T t, @NonNull Bundle bundle) {
+        if (mItems.contains(t)) {
+            List<Object> list = new ArrayList<>();
+            list.add(bundle);
+            for (OnDataSetChangedObserver<T> item : mObservers) {
+                item.onItemChanged(mItems.indexOf(t), t, list);
             }
             return true;
         }

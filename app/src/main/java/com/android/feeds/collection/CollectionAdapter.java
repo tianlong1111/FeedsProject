@@ -1,5 +1,6 @@
 package com.android.feeds.collection;
 
+import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -51,6 +52,23 @@ public class CollectionAdapter<T extends ViewItem>
         }
         if (mOnItemClickListener != null) holder.registerClickListener(mOnItemClickListener);
         return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull CollectionItemViewHolder<T> holder, int position,
+            @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else {
+            final T t = mCollection.get(position);
+            if (mBindingHoldersMap.containsKey(t)) {
+                if (mBindingHoldersMap.get(t) != holder) {
+                    mBindingHoldersMap.remove(t).onUnBind();
+                }
+            }
+            mBindingHoldersMap.put(t, holder);
+            holder.partialBind(t, payloads);
+        }
     }
 
     @Override

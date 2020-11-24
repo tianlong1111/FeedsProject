@@ -30,7 +30,6 @@ public abstract class FeedItemHorizontalViewHolder<T extends List<FeedItem<?>>>
 
                 @Override
                 public void onItemRemoved(int position) {
-
                     mAdapter.notifyItemRemoved(position);
                 }
 

@@ -119,10 +119,23 @@ public abstract class FeedsFragment extends Fragment
             mFeedRecycleView.addItemDecoration(mFeedDecoration);
         }
         mFeedRecycleView.setOnItemVisibilityListener(this);
+        if (needShareRecycleViewPool()) {
+           if (RecycleViewPoolManager.getInstance().getRecycledViewPool() != null) {
+               mFeedRecycleView.setRecycledViewPool(
+                       RecycleViewPoolManager.getInstance().getRecycledViewPool());
+           } else {
+               RecycleViewPoolManager.getInstance().setRecycledViewPool(
+                       mFeedRecycleView.getRecycledViewPool());
+           }
+        }
 
         if (getCollection().size() == 0) {
             preloadFeeds(null);
         }
+    }
+
+    protected boolean needShareRecycleViewPool() {
+        return true;
     }
 
     protected RecyclerView.LayoutManager getLayoutManager() {
