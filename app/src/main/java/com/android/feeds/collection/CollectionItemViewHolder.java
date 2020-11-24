@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.feeds.feed.FeedItem;
+
 import java.util.List;
 
 import androidx.annotation.CallSuper;
@@ -13,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CollectionItemViewHolder<T extends ViewItem> extends RecyclerView.ViewHolder {
-    public static final String CLICK_TYPE_HOLDER = "holder";
+
     @Nullable
     private T mItemModel;
 
@@ -33,7 +35,7 @@ public class CollectionItemViewHolder<T extends ViewItem> extends RecyclerView.V
 
     public void registerClickListener(@NonNull OnItemClickListener<T> listener) {
         itemView.setOnClickListener(view -> listener.onItemClick(CollectionItemViewHolder.this,
-                view, getItemModel(), CLICK_TYPE_HOLDER));
+                view, getItemModel(), FeedItem.FeedClickType.CLICK_HOLDER));
     }
 
     @Nullable

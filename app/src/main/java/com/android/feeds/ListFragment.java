@@ -1,7 +1,11 @@
 package com.android.feeds;
 
+import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import com.android.feeds.boost.AsyncInflateManager;
+import com.android.feeds.boost.AsyncInflateUtil;
 import com.android.feeds.collection.CollectionItemViewHolder;
 import com.android.feeds.feed.FeedCollection;
 import com.android.feeds.feed.FeedItem;
@@ -35,7 +39,18 @@ public class ListFragment extends FeedsFragment {
         return mListCollection;
     }
 
-    private static class ListCollection extends FeedCollection {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        AsyncInflateUtil.startAsyncInflateView(getContext(),
+                AsyncInflateUtil.InflateKey.LAYOUT_VIEW_CITY, CityViewHolder.LAYOUT_ID);
+    }
+
+    public void showCity(@NonNull String cityName) {
+        Toast.makeText(getContext(), "Click city " + cityName, Toast.LENGTH_SHORT).show();
+    }
+
+    private class ListCollection extends FeedCollection {
 
         @Override
         public void refresh(@Nullable RequestCallback callback) {
@@ -78,7 +93,9 @@ public class ListFragment extends FeedsFragment {
         @Override
         public void onViewHolderClick(@NonNull CollectionItemViewHolder<FeedItem<?>> item,
                 @NonNull View itemView, @NonNull FeedItem<?> model, @NonNull String type) {
-
+            if (FeedItem.FeedClickType.CLICK_CITY.equals(type)) {
+                 ListFragment.this.showCity(((City)model.getModel()).name);
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ public abstract class FeedsFragment extends Fragment
 
     @Nullable
     protected CollectionAdapter<FeedItem<?>> mAdapter;
-    @NonNull
+    @Nullable
     private DataCollection.OnDataSetChangedObserver<FeedItem<?>> mObserver;
 
     private int mLoadMoreCheckThreshold;
@@ -84,8 +84,10 @@ public abstract class FeedsFragment extends Fragment
 
     @Override
     public void onDestroy() {
-        getCollection().removeOnDataSetChangedObserver(mObserver);
-        mObserver = null;
+        if (mObserver != null) {
+            getCollection().removeOnDataSetChangedObserver(mObserver);
+            mObserver = null;
+        }
         super.onDestroy();
     }
 
@@ -100,7 +102,7 @@ public abstract class FeedsFragment extends Fragment
             mFeedRecycleView.setAdapter(mAdapter);
             registerViewHolder();
             mAdapter.setOnItemClickListener((item, itemView, model, type) -> {
-                if (type.equals(FeedItemViewHolder.CLICK_TYPE_HOLDER)) {
+                if (type.equals(FeedItem.FeedClickType.CLICK_HOLDER)) {
                     FeedTrackHelper.getInstance().reportClick(model);
                 }
                 if (mFeedRecycleView == null) return;
@@ -108,7 +110,7 @@ public abstract class FeedsFragment extends Fragment
                 getCollection().onViewHolderClick(item, itemView, model, type);
             });
         }
-        
+
         mFeedRecycleView.setLayoutManager(getLayoutManager());
         if (mFeedRecycleView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
             mFeedGridDecoration = new FeedGridDecoration();
@@ -120,13 +122,13 @@ public abstract class FeedsFragment extends Fragment
         }
         mFeedRecycleView.setOnItemVisibilityListener(this);
         if (needShareRecycleViewPool()) {
-           if (RecycleViewPoolManager.getInstance().getRecycledViewPool() != null) {
-               mFeedRecycleView.setRecycledViewPool(
-                       RecycleViewPoolManager.getInstance().getRecycledViewPool());
-           } else {
-               RecycleViewPoolManager.getInstance().setRecycledViewPool(
-                       mFeedRecycleView.getRecycledViewPool());
-           }
+            if (RecycleViewPoolManager.getInstance().getRecycledViewPool() != null) {
+                mFeedRecycleView.setRecycledViewPool(
+                        RecycleViewPoolManager.getInstance().getRecycledViewPool());
+            } else {
+                RecycleViewPoolManager.getInstance().setRecycledViewPool(
+                        mFeedRecycleView.getRecycledViewPool());
+            }
         }
 
         if (getCollection().size() == 0) {

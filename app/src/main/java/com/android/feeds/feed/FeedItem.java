@@ -23,6 +23,12 @@ public class FeedItem<T> implements ViewItem, Serializable {
         public static final int STATUS_VISIBILITY = 1 << 4;
     }
 
+    public static class FeedClickType {
+        public static final String CLICK_HOLDER = "holder";
+        public static final String CLICK_CITY = "show_city";
+    }
+
+
     public interface Cleanable {
         void cleanup();
     }

@@ -133,9 +133,6 @@ public class AsyncInflateManager {
     }
 
     private void replaceContextForView(@NonNull View inflatedView, @NonNull Context context) {
-        if (inflatedView == null || context == null) {
-            return;
-        }
         Context cxt = inflatedView.getContext();
         if (cxt instanceof MutableContextWrapper) {
             ((MutableContextWrapper) cxt).setBaseContext(context);

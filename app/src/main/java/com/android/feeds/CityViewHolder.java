@@ -2,11 +2,11 @@ package com.android.feeds;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.feeds.boost.AsyncInflateUtil;
 import com.android.feeds.feed.FeedItem;
 import com.android.feeds.feed.FeedItemViewHolder;
 
@@ -17,17 +17,20 @@ import androidx.annotation.Nullable;
 
 public class CityViewHolder extends FeedItemViewHolder<City> {
 
-    private static final String TAG = City.class.getSimpleName();
+    public static final int LAYOUT_ID = R.layout.layout_holder_city;
 
+    private static final String TAG = City.class.getSimpleName();
     public static final Creator<CityViewHolder> CREATOR =
-            (inflater, viewGroup) -> new CityViewHolder(
-                    inflater.inflate(R.layout.layout_holder_city, viewGroup, false));
+            (inflater, viewGroup) -> new CityViewHolder(AsyncInflateUtil.getLayoutView(inflater,
+                    viewGroup, LAYOUT_ID, AsyncInflateUtil.InflateKey.LAYOUT_VIEW_CITY));
 
     private final TextView mCityName;
+    private final TextView mStatus;
 
     public CityViewHolder(@NonNull View itemView) {
         super(itemView, R.dimen.divider, R.color.black);
         mCityName = itemView.findViewById(R.id.name);
+        mStatus = itemView.findViewById(R.id.status);
     }
 
     @Override
@@ -55,6 +58,13 @@ public class CityViewHolder extends FeedItemViewHolder<City> {
         Log.d(TAG, "onItemInactive" + getItemModel().getModel().name);
         mCityName.setText(getItemModel().getModel().name);
         return super.onItemInactive();
+    }
+
+    @Override
+    public void registerClickListener(@NonNull OnItemClickListener<FeedItem<City>> listener) {
+        super.registerClickListener(listener);
+        mCityName.setOnClickListener(view -> listener.onItemClick(CityViewHolder.this, view,
+                getItemModel(), FeedItem.FeedClickType.CLICK_CITY));
     }
 
     @Override
@@ -103,13 +113,11 @@ public class CityViewHolder extends FeedItemViewHolder<City> {
     @Override
     public void onDrawOver(@NonNull Rect rect, @NonNull Canvas canvas, int preViewType,
             int nextViewType) {
-        Log.d(TAG, "onDrawOver" + getItemModel().getModel().name);
         super.onDrawOver(rect, canvas, preViewType, nextViewType);
     }
 
     @Override
     public void getDividerOffset(@NonNull Rect rect, int preViewType, int nextViewType) {
-        Log.d(TAG, "getDividerOffset" + getItemModel().getModel().name);
         super.getDividerOffset(rect, preViewType, nextViewType);
     }
 }
